@@ -1,19 +1,15 @@
-import { OrderDocument } from '../modules/orders/entities/order.entity';
-import { PaymentMethod } from '../modules/orders/enums/payment-method.enum';
-import { OrderRepository } from '../modules/orders/repositories/order.repository';
-import { CreateOrderDto } from '../modules/orders/dto/create-order.dto';
-import { UpdateOrderDto } from '../modules/orders/dto/update-order.dto';
-import { NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { OrderDocument } from '../entities/order.entity';
+import { OrderRepository } from '../repositories/order.repository';
+import { CreateOrderDto } from '../dto/create-order.dto';
+import { UpdateOrderDto } from '../dto/update-order.dto';
+import { IOrderFilter } from '../interfaces/order-filter.interface';
 
-interface FindAllOrdersFilter {
-  clientId?: string;
-  paymentMethod?: PaymentMethod;
-}
-
+@Injectable()
 export class OrdersService {
   constructor(private readonly orderRepository: OrderRepository) {}
 
-  async findAll(filter?: FindAllOrdersFilter): Promise<OrderDocument[]> {
+  async findAll(filter?: IOrderFilter): Promise<OrderDocument[]> {
     const queryFilter: any = {};
     if (filter?.clientId) {
       queryFilter.clientId = filter.clientId;

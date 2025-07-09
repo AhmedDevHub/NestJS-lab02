@@ -1,98 +1,262 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# TechXpress Orders API - MongoDB Version
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A NestJS REST API for managing orders with MongoDB integration.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Features
 
-## Description
+- **CRUD Operations**: Complete order management (Create, Read, Update, Delete)
+- **MongoDB Integration**: Using Mongoose ODM for data persistence
+- **Swagger Documentation**: Interactive API documentation at `/api`
+- **Data Validation**: Input validation using class-validator
+- **3-Tier Architecture**: Controller → Service → Repository pattern
+- **Filtering**: Get orders by clientId and paymentMethod
+- **Custom Repository**: OrderRepository for data access layer
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📋 Requirements
 
-## Project setup
+- Node.js (v16 or higher)
+- MongoDB (v4.4 or higher)
+- npm or yarn
+
+## 🛠️ Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd NestJS-lab02
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Setup MongoDB**
+   
+   **Option 1: Local MongoDB**
+   - Install MongoDB locally
+   - Start MongoDB service: `mongod`
+   - Database `techxpress` will be created automatically
+
+   **Option 2: MongoDB Atlas (Cloud)**
+   - Create a MongoDB Atlas account
+   - Create a cluster and get connection string
+   - Update connection string in `src/app.module.ts`
+
+4. **Configure Database Connection**
+   
+   Update the MongoDB connection string in `src/app.module.ts`:
+   ```typescript
+   MongooseModule.forRoot('mongodb://localhost:27017/techxpress')
+   ```
+
+   For MongoDB Atlas:
+   ```typescript
+   MongooseModule.forRoot('mongodb+srv://username:password@cluster.mongodb.net/techxpress')
+   ```
+
+## 🏃‍♂️ Running the Application
 
 ```bash
-$ npm install
+# Development mode
+npm run start:dev
+
+# Production mode
+npm run start:prod
+
+# Build
+npm run build
 ```
 
-## Compile and run the project
+The API will be available at `http://localhost:3000`
 
-```bash
-# development
-$ npm run start
+## 📚 API Documentation
 
-# watch mode
-$ npm run start:dev
+Access the Swagger documentation at: `http://localhost:3000/api`
 
-# production mode
-$ npm run start:prod
+## 🔗 API Endpoints
+
+| Method | Endpoint | Description | Body |
+|--------|----------|-------------|------|
+| GET | `/orders` | Get all orders | - |
+| GET | `/orders?clientId=123` | Get orders by client | - |
+| GET | `/orders?paymentMethod=Cash` | Get orders by payment method | - |
+| GET | `/orders/:id` | Get order by ID | - |
+| POST | `/orders` | Create new order | CreateOrderDto |
+| PUT | `/orders/:id` | Full update order | CreateOrderDto |
+| PATCH | `/orders/:id` | Partial update order | UpdateOrderDto |
+| DELETE | `/orders/:id` | Delete order | - |
+
+## 📊 Data Model
+
+### Order Entity
+```typescript
+{
+  _id: string,           // MongoDB ObjectId
+  amount: number,        // Order amount
+  longitude: number,     // Location longitude
+  latitude: number,      // Location latitude
+  clientId: string,      // Client identifier
+  paymentMethod: 'Cash' | 'Visa',  // Payment method
+  createdAt: Date,       // Auto-generated
+  updatedAt: Date        // Auto-generated
+}
 ```
 
-## Run tests
+### CreateOrderDto
+```typescript
+{
+  amount: number,
+  longitude: number,
+  latitude: number,
+  clientId: string,
+  paymentMethod: 'Cash' | 'Visa'
+}
+```
+
+## 🔄 Migration from PostgreSQL
+
+This project was successfully migrated from PostgreSQL with TypeORM to MongoDB with Mongoose:
+
+### Key Changes Made:
+1. **Database**: PostgreSQL → MongoDB
+2. **ORM**: TypeORM → Mongoose
+3. **Schema**: Entity decorators → Mongoose schema
+4. **IDs**: Numeric IDs → MongoDB ObjectIds (strings)
+5. **Repository**: TypeORM Repository → Custom Mongoose Repository
+6. **Dependencies**: Removed TypeORM, added Mongoose
+
+### Architecture Maintained:
+- ✅ 3-Tier Architecture (Controller → Service → Repository)
+- ✅ Custom Repository Pattern
+- ✅ Data Validation with DTOs
+- ✅ Swagger Documentation
+- ✅ All CRUD Operations
+- ✅ Filtering Capabilities
+- ✅ Error Handling (404, 400, etc.)
+
+## 🏗️ **Enhanced Architecture & Best Practices**
+
+### **Improved Project Structure:**
+- **Feature-based Module Organization**: Each feature has its own dedicated module with proper subfolder structure
+- **Separation of Concerns**: Clear separation between controllers, services, repositories, DTOs, entities, and interfaces
+- **Barrel Exports**: Index files for clean and organized imports
+- **Common Module**: Shared utilities and components for reusability
+- **Configuration Module**: Centralized configuration management
+
+### **NestJS Best Practices Implemented:**
+- **Modular Architecture**: Feature modules with clear boundaries
+- **Dependency Injection**: Proper service injection and loose coupling
+- **Interface Segregation**: TypeScript interfaces for better type safety
+- **Single Responsibility**: Each class has a single, well-defined purpose
+- **Clean Imports**: Barrel exports for cleaner import statements
+- **Proper Error Handling**: Consistent error responses with appropriate HTTP status codes
+- **Input Validation**: Comprehensive DTO validation with class-validator
+- **Documentation**: Extensive Swagger/OpenAPI documentation
+
+### **Application Layer Architecture:**
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     HTTP Request/Response                    │
+└─────────────────┬───────────────────────────────────────────┘
+                  │
+┌─────────────────▼───────────────────────────────────────────┐
+│                  Controller Layer                           │
+│  • HTTP Route Handling  • Request Validation               │
+│  • Response Formatting  • Swagger Documentation            │
+└─────────────────┬───────────────────────────────────────────┘
+                  │
+┌─────────────────▼───────────────────────────────────────────┐
+│                   Service Layer                             │
+│  • Business Logic      • Data Transformation               │
+│  • Error Handling      • Orchestration                     │
+└─────────────────┬───────────────────────────────────────────┘
+                  │
+┌─────────────────▼───────────────────────────────────────────┐
+│                 Repository Layer                            │
+│  • Data Access Logic   • Database Operations               │
+│  • Query Building      • Result Mapping                    │
+└─────────────────┬───────────────────────────────────────────┘
+                  │
+┌─────────────────▼───────────────────────────────────────────┐
+│                    MongoDB Database                         │
+│  • Document Storage     • Indexing                         │
+│  • Transactions        • Aggregation                       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+## 🧪 Testing
 
 ```bash
-# unit tests
-$ npm run test
+# Unit tests
+npm run test
 
 # e2e tests
-$ npm run test:e2e
+npm run test:e2e
 
-# test coverage
-$ npm run test:cov
+# Test coverage
+npm run test:cov
 ```
 
-## Deployment
+## 📁 Project Structure
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+```
+src/
+├── common/                     # Shared utilities and components
+│   ├── constants/              # Application constants
+│   ├── decorators/             # Custom decorators
+│   ├── filters/                # Exception filters
+│   ├── guards/                 # Authentication guards
+│   ├── interceptors/           # Request/response interceptors
+│   └── pipes/                  # Validation pipes
+├── config/                     # Configuration files
+│   ├── database.config.ts      # Database configuration
+│   └── config.module.ts        # Configuration module
+├── modules/                    # Feature modules
+│   └── orders/                 # Orders feature module
+│       ├── controllers/        # REST controllers
+│       │   ├── orders.controller.ts
+│       │   └── orders.controller.spec.ts
+│       ├── dto/                # Data Transfer Objects
+│       │   ├── create-order.dto.ts
+│       │   ├── update-order.dto.ts
+│       │   └── index.ts        # Barrel exports
+│       ├── entities/           # Database schemas
+│       │   ├── order.entity.ts
+│       │   └── index.ts
+│       ├── enums/              # Type enums
+│       │   ├── payment-method.enum.ts
+│       │   └── index.ts
+│       ├── interfaces/         # TypeScript interfaces
+│       │   ├── order-filter.interface.ts
+│       │   └── index.ts
+│       ├── repositories/       # Data access layer
+│       │   └── order.repository.ts
+│       ├── services/           # Business logic
+│       │   ├── orders.service.ts
+│       │   └── orders.service.spec.ts
+│       ├── orders.module.ts    # Module definition
+│       └── index.ts            # Module barrel exports
+├── app.controller.ts           # Root controller
+├── app.module.ts               # Root module
+├── app.service.ts              # Root service
+└── main.ts                     # Application bootstrap
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 🔧 Development
 
-## Resources
+- **Code formatting**: `npm run format`
+- **Linting**: `npm run lint`
+- **Watch mode**: `npm run start:dev`
 
-Check out a few resources that may come in handy when working with NestJS:
+## 📝 Notes
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- MongoDB ObjectIds are used instead of numeric IDs
+- All TypeORM references have been removed
+- Maintains all original functionality
+- Swagger documentation updated for string IDs
+- Error codes: 200, 201, 204, 404, 400 as specified
 
-## Support
+---
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+**Technology Stack**: NestJS, MongoDB, Mongoose, TypeScript, Swagger, class-validator

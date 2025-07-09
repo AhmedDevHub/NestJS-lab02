@@ -1,20 +1,10 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { OrdersModule } from './orders/orders.module';
-import { Order } from './orders/order.entity';
+import { MongooseModule } from '@nestjs/mongoose';
+import { OrdersModule } from './modules/orders';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres', // Change as needed
-      password: 'postgres', // Change as needed
-      database: 'techxpress', // Change as needed
-      entities: [Order],
-      synchronize: true, // Set to false in production
-    }),
+    MongooseModule.forRoot('mongodb://localhost:27017/techxpress'),
     OrdersModule,
   ],
 })

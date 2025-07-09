@@ -1,6 +1,6 @@
 import { IsNumber, IsString, IsEnum } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { PaymentMethod } from '../order.entity';
+import { PaymentMethod } from '../enums/payment-method.enum';
 
 export class CreateOrderDto {
   @ApiProperty({ example: 100.5 })
